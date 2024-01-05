@@ -53,7 +53,6 @@ public class JobService {
         User user = userRepository.findById(userId).orElseThrow(()->new NotFoundException("User id not match"));
         Address address = addressRepository.findById(address_id).orElseThrow(()->new NotFoundException("Address id not match"));
         Category category = categoryRepository.findById(category_id).orElseThrow(()->new NotFoundException("Category id not match"));
-        Image image = imageService.saveImage(token, imageName, imageData);
 
         String inputString = jobTime;
 
@@ -93,8 +92,11 @@ public class JobService {
         job.setStatus(JobStatus.open.toString());
         job.setModifiedTime(ZonedDateTime.now());
         job.setAddedTime(ZonedDateTime.now());
-        job.setImageId(image.getId());
-
+        if(imageData != null) {
+            Image image = imageService.saveImage(token, imageName, imageData);
+            job.setImageId(image.getId());
+        }
+        
         return jobRepository.save(job);
     }
 
